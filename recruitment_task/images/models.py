@@ -5,9 +5,15 @@ from django.db import models
 
 class Tier(models.Model):
     name = models.CharField(max_length=50)
-    thumbnail_sizes = models.CharField(max_length=255, default="200")
-    link_present = models.BooleanField()
-    allow_expiring_link = models.BooleanField()
+    thumbnail_sizes = models.CharField(
+        max_length=255, default="200", help_text="Enter sizes seperated by comma"
+    )
+    link_present = models.BooleanField(
+        help_text="Wheter or not can user with this tier see a link to the originally uploaded image"
+    )
+    allow_expiring_link = models.BooleanField(
+        help_text="Wheter or not can user with this tier fetch an expiring link to the image"
+    )
 
     def __str__(self):
         return self.name

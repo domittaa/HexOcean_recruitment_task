@@ -4,7 +4,6 @@ venv
 *.pot
 *.pyc
 __pycache__
-recruitment_task/db.sqlite3
 media
 
 # Backup files #
