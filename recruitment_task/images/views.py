@@ -54,7 +54,7 @@ class ImageCreateApiView(generics.CreateAPIView):
         thumbnail_image.thumbnail((size, size))
         fmt = Path(image.original_image.name).suffix
         path = f"./media/thumbnails/{image.id}/{size}{fmt}"
-        Path(f"./media/thumbnails/{image.id}").mkdir(exist_ok=True)
+        Path(f"./media/thumbnails/{image.id}").mkdir(exist_ok=True, parents=True)
         thumbnail_image.save(path)
         thumbnail_obj = Thumbnail(path=path, size=size, image=image)
 

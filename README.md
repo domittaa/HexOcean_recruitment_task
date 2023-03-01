@@ -39,14 +39,14 @@ To run app run following docker command:<br>
 docker-compose up 
  ```
 
-Now we need to get container id of our app, to do this run:<br
+Now we need to get container id of our app, to do this run:<br>
 ```shell
 docker ps
 ```
 
 Now log into:<br>
 ```shell
-docker exec -it <container_id_from_previous_step> bash
+docker exec -it <id of hexocean_recruitment_task-web> bash
 ```
 
 This will open console inside container. Now we need to perform migrations to create DB with all required tables. Run:<br>
@@ -61,5 +61,6 @@ In the end create superuser to log into admin panel<br>
 ```shell
  python manage.py createsuperuser
  ```
-
+Now you can go to localhost:8000/admin and login. To use app you need user with account tier, 
+so you need to assign account tier to selected user in admin panel. 
 
