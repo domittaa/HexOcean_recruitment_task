@@ -1,15 +1,15 @@
 import datetime
-from pathlib import Path
 import uuid
+from pathlib import Path
 
-from PIL import Image as PILImage
-from django.http import Http404, FileResponse
+from django.http import FileResponse, Http404
 from django.utils import timezone
+from PIL import Image as PILImage
 from rest_framework import generics, permissions, status
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 
-from .models import Image, Thumbnail, ExpiringLinks
+from .models import ExpiringLinks, Image, Thumbnail
 from .serializers import (
     ExpiringLinksSerializer,
     ImageBasicSerializer,
@@ -93,21 +93,21 @@ class ExpiringLinkCreateApiView(generics.CreateAPIView):
         headers = self.get_success_headers(serializer.data)
         response = {
             "link": request.build_absolute_uri(f"/links/get_by_code/{link.code}"),
-            "expiration_date": link.time
+            "expiration_date": link.time,
         }
         return Response(response, status=status.HTTP_201_CREATED, headers=headers)
 
     def perform_create(self, serializer):
         link = serializer.create()
         link.code = uuid.uuid4().hex
-        link.time = datetime.datetime.now() + datetime.timedelta(seconds=serializer.data['seconds'])
+        link.time = datetime.datetime.now() + datetime.timedelta(seconds=serializer.data["seconds"])
         link.save()
         return link
 
 
 class ExpiringLinkRetrieveApiView(generics.RetrieveAPIView):
     queryset = ExpiringLinks.objects.all()
-    lookup_field = 'code'
+    lookup_field = "code"
 
     def get(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -115,6 +115,6 @@ class ExpiringLinkRetrieveApiView(generics.RetrieveAPIView):
             raise Http404
         image_file = instance.image.original_image
         fmt = Path(image_file.name).suffix[1:]
-        response = FileResponse(image_file, content_type=f'image/{fmt}')
-        response['Content-Disposition'] = f'attachment; filename="{instance.code}.{fmt}"'
+        response = FileResponse(image_file, content_type=f"image/{fmt}")
+        response["Content-Disposition"] = f'attachment; filename="{instance.code}.{fmt}"'
         return response

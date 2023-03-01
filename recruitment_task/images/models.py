@@ -1,6 +1,5 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.validators import FileExtensionValidator, MaxValueValidator, MinValueValidator
-
 from django.db import models
 
 
@@ -50,7 +49,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 class Image(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     original_image = models.ImageField(
-        upload_to="media/originals/",
+        upload_to="originals/",
         null=True,
         blank=True,
         validators=[FileExtensionValidator(allowed_extensions=["png", "jpg", "jpeg"])],
@@ -66,15 +65,9 @@ class Thumbnail(models.Model):
     size = models.IntegerField()
     image = models.ForeignKey(Image, on_delete=models.CASCADE, related_name="thumbnails")
 
-    # def __str__(self):
-    #     return self.image.original_image.name
-
 
 class ExpiringLinks(models.Model):
     code = models.CharField(max_length=100)
     image = models.ForeignKey(Image, on_delete=models.CASCADE)
     time = models.DateTimeField()
-    seconds = models.IntegerField(validators=[
-            MaxValueValidator(3000),
-            MinValueValidator(300)
-        ])
+    seconds = models.IntegerField(validators=[MaxValueValidator(30000), MinValueValidator(300)])
