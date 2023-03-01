@@ -30,37 +30,55 @@ pip install -r requirements.txt
 ```
 
 ## Run code <a name="running"></a>
-First we need to build docker container, to do this run:<br>
+
+Follow all these steps:
+
+1. First we need to build docker container, to do this run:<br>
 ```shell
 docker-compose build
 ```
-To run app run following docker command:<br>
+2. To run app run following docker command:<br>
 ```shell
 docker-compose up 
  ```
 
-Now we need to get container id of our app, to do this run:<br>
+**Important**:
+Sometimes the command above could fail with an error such as
+```
+django.db.utils.OperationalError: could not connect to server: Connection refused
+Is the server running on host "db" (172.22.0.2) and accepting
+hexocean_recruitment_task-web-1  | 	TCP/IP connections on port 5432?
+```
+This is due to the fact that Django started faster than the database. If that happens, try cancelling docker-compose up and run it again.
+
+
+3. Now we need to get container id of our app, to do this run:<br>
 ```shell
 docker ps
 ```
 
-Now log into:<br>
+4. Now log into:<br>
 ```shell
 docker exec -it <id of hexocean_recruitment_task-web> bash
 ```
+This will open console inside container.
 
-This will open console inside container. Now we need to perform migrations to create DB with all required tables. Run:<br>
+5. Now we need to perform migrations to create DB with all required tables. Run:<br>
 ```shell
 python manage.py migrate
 ```
-Load default initial values to database.
+6. Load default initial values to database.
 ```shell
  python manage.py loaddata tiers
  ```
-In the end create superuser to log into admin panel<br>
+
+7. In the end create superuser to log into admin panel<br>
 ```shell
  python manage.py createsuperuser
  ```
-Now you can go to localhost:8000/admin and login. To use app you need user with account tier, 
-so you need to assign account tier to selected user in admin panel. 
+8. Go to localhost:8000/admin and login. **To use app you need user with account tier**, 
+so you need to assign account tier to selected user in admin panel:
 
+![img.png](img.png)
+
+9. After setting up the tier, go to `/images/` or other endpoints to test the API.
